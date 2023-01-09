@@ -1,0 +1,15 @@
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+    - name: Add the user '{{ user }}' with a specific uid and a primary group of '{{ group }}'
+      ansible.builtin.user:
+        name: '{{ user }}'
+        comment: Sudoer User
+        group: '{{ group }}'
+        home: '/home/{{ user }}'
+        shell: /bin/bash
+        password: "{{ password | password_hash('sha512') }}"
+        groups: 
+          - sudo
+        append: yes
