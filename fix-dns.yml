@@ -1,0 +1,35 @@
+---
+- name: fix-dns
+  hosts: kubeadm-01
+  remote_user: ansible
+
+  tasks:
+  - name: Install resolvconf
+    become: true
+    apt:
+      name: resolvconf
+      state: present
+      update_cache: true
+  - name: Make sure resolvconf service unit is running
+    become: true
+    ansible.builtin.systemd:
+      state: started
+      name: resolvconf.service
+  - name: Add nameserver 1
+    become: true
+    ansible.builtin.lineinfile:
+      path: /etc/resolvconf/resolv.conf.d/head
+      regexp: '^nameserver 10.42.1.240'
+      insertbefore: EOF
+      line: 'nameserver 10.42.1.240'
+  - name: Add nameserver 2
+    become: true
+    ansible.builtin.lineinfile:
+      path: /etc/resolvconf/resolv.conf.d/head
+      regexp: '^nameserver 10.42.1.241'
+      insertbefore: EOF
+      line: 'nameserver 10.42.1.241'
+  - name: Reboot server with long timeout
+    become: true
+    reboot:
+      reboot_timeout: 3600

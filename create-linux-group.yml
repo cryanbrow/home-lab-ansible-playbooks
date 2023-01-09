@@ -1,8 +1,0 @@
-- hosts: all
-  become: true
-  become_user: root
-  tasks:
-    - name: Ensure group {{ group }} exists
-      ansible.builtin.group:
-        name: '{{ group }}'
-        state: present

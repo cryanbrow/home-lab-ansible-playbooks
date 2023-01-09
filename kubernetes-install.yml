@@ -150,7 +150,7 @@
     - name: Add Kuberenetes repo to apt
       ansible.builtin.shell: "echo \"deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main\" | tee /etc/apt/sources.list.d/kubernetes.list"
       when: not kubernetes_apt.stat.exists
-    - name: Install kubernetes required dependencies
+    - name: Install Kubernetes
       apt:
         name: 
         - kubectl
@@ -171,3 +171,6 @@
       dpkg_selections:
         name: kubeadm
         selection: hold
+    - name: Reboot server with long timeout
+      reboot:
+        reboot_timeout: 3600
